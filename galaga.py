@@ -1,10 +1,12 @@
-# Import the pygame module
 import pygame
-# Import random for random numbers
+import pygame_menu
 import random
 
 pygame.font.init()
 pygame.mixer.init()
+pygame.init()
+surface = pygame.display.set_mode((600, 400))
+
 # the constants for the screen width and height
 WIDTH, HEIGHT = 900,500
 
@@ -24,7 +26,7 @@ speed = 7
 #missile_hit_sound = pygame.mixer.Sound()
 missile_fire = pygame.mixer.Sound('missile.mp3')
 torpedo_fire = pygame.mixer.Sound('torpedo.mp3')
-target_hit = pygame.mixer.Sound('explosion.mp3')
+target_hit = pygame.mixer.Sound('explosion.wav')
 
 health_font = pygame.font.SysFont('comicsans',40)
 
@@ -35,6 +37,7 @@ max_enemy_ship = 3
 max_bullets = 5
 #color red
 red = (255,0,0)
+
 
 collision = pygame.USEREVENT + 1
 missile_hit = pygame.USEREVENT + 2
@@ -57,10 +60,18 @@ enemy_ship_large=pygame.transform.rotate(large_enemy_ship_image ,270)
 torpedo =pygame.transform.rotate(missile_image,90)
 torpedo_e =pygame.transform.rotate(torpedo_image,270)
 
-# main class
-def main():
+
+
+def set_difficulty(value, difficulty):
+    # Do the job here !
+    pass
+        
+
+def start_the_game():
+    # Do the job here !
+    pass
     #rectangle for ship
-    ship_r = pygame.Rect((450,450,30,44))
+    ship_r = pygame.Rect((410,410,30,44))
     #Only run when true
    
     #lists for missile and enemy
@@ -98,6 +109,10 @@ def main():
                 run = False
                 pygame.quit()
          # firing to enemy
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    menuSelect()
+                       
             if event.type == pygame.KEYDOWN and len(missiles) <= max_bullets:
                 if event.key == pygame.K_RCTRL:
                     #create rect for missile/torpedo
@@ -221,7 +236,15 @@ def main():
         clock.tick(FPS)
         
 
-    main()
 
-if __name__ == '__main__':
-    main()
+def menuSelect():
+    menu = pygame_menu.Menu('Welcome', 400, 300,
+                           theme=pygame_menu.themes.THEME_BLUE)
+
+    menu.add.text_input('Name :', default='John Doe')
+    menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+    menu.add.button('Play', start_the_game)
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+
+    menu.mainloop(surface)
+menuSelect()

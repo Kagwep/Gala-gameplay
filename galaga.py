@@ -28,7 +28,7 @@ missile_fire = pygame.mixer.Sound('missile.mp3')
 torpedo_fire = pygame.mixer.Sound('torpedo.mp3')
 target_hit = pygame.mixer.Sound('explosion.wav')
 
-health_font = pygame.font.SysFont('comicsans',40)
+health_font = pygame.font.SysFont('comicsans',20)
 
 # maximum number of enemy ships at any moment on screen
 max_enemy = 6
@@ -241,7 +241,7 @@ def menuSelect():
     menu = pygame_menu.Menu('Welcome', 400, 300,
                            theme=pygame_menu.themes.THEME_BLUE)
 
-    menu.add.text_input('Name :', default='John Doe')
+    menu.add.text_input('', default='Play game')
     menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
     menu.add.button('Play', start_the_game)
     menu.add.button('Quit', pygame_menu.events.EXIT)

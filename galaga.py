@@ -117,12 +117,12 @@ def instructions():
         
 def start_the_game():
     # Do the job here !
-    pass
+    
     #rectangle for ship
     ship_r = pygame.Rect((410,410,30,44))
     #Only run when true
    
-    #lists for missile and enemy
+    #lists 
     missiles = []
     missiles_e = []
     largeShipCollide_health = 1
@@ -140,9 +140,11 @@ def start_the_game():
     clock = pygame.time.Clock()
     run = True
     while run:
+        #check whether the number of small ships allowed has been reached
         if len(enemy_l) < max_enemy:
             enemy_r = pygame.Rect(random.randint(100,800),random.randint(0,50),random.randint(20,40),random.randint(20,40))
             enemy_l.append(enemy_r)
+        #check whether the number of large ships allowed has been reached
         if len(l_e_ship)< max_enemy_ship:
             l_ship = pygame.Rect(random.randint(0,WIDTH),random.randint(0,50),random.randint(20,30),random.randint(20,30))
             l_e_ship.append(l_ship)
@@ -239,29 +241,37 @@ def start_the_game():
             # check whether ship is beyond screen view and remove it from the list
             if space.y > HEIGHT:
                 enemy_l.remove(space)
-
+                
+            # check for all ship missiles/bullets
             for missile_s in missiles:
                 # speed of missiles
                 missile_s.y -= 1
+                #movement beyond screen
                 if missile_s.y <= 0:
                     missiles.remove(missile_s)
+                #collision with enemy small ship
                 if missile_s.colliderect(space):
                     pygame.event.post(pygame.event.Event(enemy_missile_hit))
                     enemy_l.remove(space)
                     missiles.remove(missile_s)
                     score += 5
                     target_hit.play()
+                # movement out of screen
                 elif space in enemy_l  and space.y > HEIGHT:
                     enemy_l.remove(space)
             
-
+        # check for every enemy missile/bullet
         for missi in missiles_e:
             missi.y +=8
+            # A collision with ship
             if missi.colliderect(ship_r):
                 pygame.event.post(pygame.event.Event(missile_hit))
                 missiles_e.remove(missi)
+                target_hit.play()
+            # move beyond screen
             elif missi.y > HEIGHT:
                 missiles_e.remove(missi)
+            # missiles/bullets collision
             for s_bullet in missiles:
                 if s_bullet.colliderect(missi):
                     missiles_e.remove(missi)
@@ -276,16 +286,20 @@ def start_the_game():
 
         ship_health = health_font.render("Score: " + str(score ),1,(255,255,255))
         gala_win.blit(ship_health,(10,10))
+
+        # Display small ships
         
         for spaceD in enemy_l: 
             gala_win.blit(enemy,(spaceD.x,spaceD.y))
-            
+
+         #  Display large ships   
         for large_ship in l_e_ship:
             gala_win.blit(enemy_ship_large,(large_ship.x,large_ship.y))
-            
+          ## Display mullets/missiles  
         for missileS in missiles:
             gala_win.blit(torpedo,(missileS))
 
+        ## Display enemy bullets/missiles
         for missi in missiles_e:
             gala_win.blit(torpedo_e,(missi))
             #pygame.draw.rect(gala_win,red,missileS)
@@ -293,17 +307,18 @@ def start_the_game():
         clock.tick(FPS)
         
 def set_difficulty(value, difficulty):
-    # Do the job here !
+    # created difficulty levels
     pass
-
+#Menu
 def menuSelect():
     #music.play()
+    #sounds in menu
     engine = sound.Sound()
     engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'mouseclick.mp3')
     engine.set_sound(sound.SOUND_TYPE_OPEN_MENU, 'mouseclick.mp3')
     menu = pygame_menu.Menu('Welcome', 400, 300,
                            theme=pygame_menu.themes.THEME_BLUE)
-
+    #Componenets in menu
     menu.add.text_input('Name:', default='Play game')
     menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
     menu.add.button('Play', start_the_game)

@@ -1,12 +1,10 @@
+# Import the pygame module
 import pygame
-import pygame_menu
+# Import random for random numbers
 import random
-from pygame_menu import sound
+
 pygame.font.init()
 pygame.mixer.init()
-pygame.init()
-surface = pygame.display.set_mode((600, 400))
-
 # the constants for the screen width and height
 WIDTH, HEIGHT = 900,500
 
@@ -22,19 +20,14 @@ FPS = 30
 speed = 7
 
 
-# sounds used in game
+
 #missile_hit_sound = pygame.mixer.Sound()
 missile_fire = pygame.mixer.Sound('missile.mp3')
 torpedo_fire = pygame.mixer.Sound('torpedo.mp3')
-target_hit = pygame.mixer.Sound('explosion.wav')
-mouseclick= pygame.mixer.Sound('mouseclick.mp3')
-music = pygame.mixer.Sound('music.mp3')
+target_hit = pygame.mixer.Sound('explosion.mp3')
 
-# fonts used in game
-health_font = pygame.font.SysFont('comicsans',20)
-d_end_font = pygame.font.SysFont('comicsans',50)
-end_font = pygame.font.SysFont('comicsans',50)
-ins = pygame.font.SysFont('comicsans',20)
+health_font = pygame.font.SysFont('comicsans',40)
+
 # maximum number of enemy ships at any moment on screen
 max_enemy = 6
 max_missiles =  5
@@ -42,7 +35,6 @@ max_enemy_ship = 3
 max_bullets = 5
 #color red
 red = (255,0,0)
-
 
 collision = pygame.USEREVENT + 1
 missile_hit = pygame.USEREVENT + 2
@@ -65,61 +57,10 @@ enemy_ship_large=pygame.transform.rotate(large_enemy_ship_image ,270)
 torpedo =pygame.transform.rotate(missile_image,90)
 torpedo_e =pygame.transform.rotate(torpedo_image,270)
 
-#screen when game ends
-def endGame(disp,info):
-    displayResult = d_end_font.render(info,1,(255,240,255))
-    gala_win.blit(displayResult,(WIDTH/2 - displayResult.get_width()/2, HEIGHT/3 - displayResult.get_height()))
-    displayResults = end_font.render(disp,1,(255,240,255))
-    gala_win.blit(displayResults,(WIDTH/2 - displayResults.get_width()/2, HEIGHT/2 - displayResults.get_height()/2))
-    pygame.display.update()
-    pygame.time.delay(5000)
-
-# instructions to play the game
-def instructions():
-    inst_0 = "To Play Game: "
-    inst_1 = [" Press W to move up" ,"Press S to move backwards" ," Press A to move left", " Press D to move right"]
-
-    ret = "Press enter to return to Main Menu"
-
-    running = True
-
-    #music.play()
-
-    while True:
-
-        num = 6
-
-        for event in pygame.event.get():
-
-            # quit when user closes window      
-            if event.type == pygame.QUIT:
-                run = False
-                pygame.quit()
-             # firing to enemy
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    mouseclick.play()
-                    menuSelect()
-        gala_win.blit(space_image,(0,0))
-        
-        s_inst = ins.render(inst_0,1,(255,240,255))
-        gala_win.blit(s_inst ,(WIDTH/2 - s_inst .get_width()/2, HEIGHT/10 - s_inst .get_height()))
-        for line in inst_1:
-            show = ins.render(line,1,(255,240,255))
-            gala_win.blit(show,(WIDTH/2 - show.get_width()/2, HEIGHT/num - show.get_height()))
-            num -= 1
-            
-        show_r= ins.render(ret,1,(255,240,255))
-        gala_win.blit(show_r,(WIDTH/2 - show_r.get_width()/2, HEIGHT/1.5 - show_r.get_height()/2))
-        
-        pygame.display.update()
-    
-        
-def start_the_game():
-    # Do the job here !
-    pass
+# main class
+def main():
     #rectangle for ship
-    ship_r = pygame.Rect((410,410,30,44))
+    ship_r = pygame.Rect((450,450,30,44))
     #Only run when true
    
     #lists for missile and enemy
@@ -133,8 +74,8 @@ def start_the_game():
     enemy_d = []
     colision_count = 0
     enemy_l = []
-    score = 0
     l_e_ship = []
+    health = 10
    
     # set time of playing
     clock = pygame.time.Clock()
@@ -157,17 +98,16 @@ def start_the_game():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()
+
+
          # firing to enemy
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    menuSelect()
-                       
             if event.type == pygame.KEYDOWN and len(missiles) <= max_bullets:
                 if event.key == pygame.K_RCTRL:
                     #create rect for missile/torpedo
                     missile = pygame.Rect(ship_r.x , ship_r.y,10,5)
                     missiles.append(missile)
                     torpedo_fire.play()
+                
         # missile/torpedo from enemy ship
 
             if event.type == collision:
@@ -179,24 +119,20 @@ def start_the_game():
                 smallShipCollide -= 1
                 
         if largeShipCollide_health <= 0:
-            endGame("Your score is: " + str(score ),"Game Over ....")
-            #music.play()
             break
             
         elif missileHit <= 0:
-            endGame("Your score is: " + str(score ),'Game Over ....')
-           # music.play()
             break
         elif smallShipCollide <= 0:
-            endGame("Your score is: " + str(score ),'Game Over ....')
-           # music.play()
             break
                   
         
         # listenting to key presses
         # control of the ship
         keys_pressed = pygame.key.get_pressed()
+
         
+            
 
         if keys_pressed[pygame.K_a] and ship_r.x - 5 > 0: # move left
              ship_r.x -= 5
@@ -222,8 +158,6 @@ def start_the_game():
 
                     if e_ship in enemy_hit:
                         l_e_ship.remove(e_ship)
-                        target_hit.play()
-                        score += 10
                         
                     else:
                        enemy_hit.append(e_ship)
@@ -249,7 +183,6 @@ def start_the_game():
                     pygame.event.post(pygame.event.Event(enemy_missile_hit))
                     enemy_l.remove(space)
                     missiles.remove(missile_s)
-                    score += 5
                     target_hit.play()
                 elif space in enemy_l  and space.y > HEIGHT:
                     enemy_l.remove(space)
@@ -274,8 +207,9 @@ def start_the_game():
         gala_win.blit(space_image,(0,0))
         gala_win.blit(ship,(ship_r.x,ship_r.y))
 
-        ship_health = health_font.render("Score: " + str(score ),1,(255,255,255))
-        gala_win.blit(ship_health,(10,10))
+        ship_health = health_font.render("Health: " + str(health),1,(255,255,255))
+
+        gala_win.blit(ship_health,(WIDTH - ship_health.get_width()-10,10))
         
         for spaceD in enemy_l: 
             gala_win.blit(enemy,(spaceD.x,spaceD.y))
@@ -292,23 +226,8 @@ def start_the_game():
         pygame.display.update()
         clock.tick(FPS)
         
-def set_difficulty(value, difficulty):
-    # Do the job here !
-    pass
 
-def menuSelect():
-    #music.play()
-    engine = sound.Sound()
-    engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'mouseclick.mp3')
-    engine.set_sound(sound.SOUND_TYPE_OPEN_MENU, 'mouseclick.mp3')
-    menu = pygame_menu.Menu('Welcome', 400, 300,
-                           theme=pygame_menu.themes.THEME_BLUE)
+    main()
 
-    menu.add.text_input('Name:', default='Play game')
-    menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
-    menu.add.button('Play', start_the_game)
-    menu.add.button('Instructions', instructions)
-    menu.add.button('Quit', pygame_menu.events.EXIT)
-    menu.set_sound(engine, recursive=True)
-    menu.mainloop(surface)
-menuSelect()
+if __name__ == '__main__':
+    main()

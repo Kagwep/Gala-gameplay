@@ -20,6 +20,8 @@ pygame.display.set_caption('Galagala D')
 FPS = 30
 # speed of missile/torpedo
 speed = 7
+speed_1 = 5
+
 
 
 # sounds used in game
@@ -237,7 +239,8 @@ def start_the_game():
                 pygame.event.post(pygame.event.Event(small_ship_coll))
                 enemy_l.remove(space)
             # speed of smaller enemy ship
-            space.y += 4
+            space.y += 7
+            #space.x += random.randint(-10,10)
             # check whether ship is beyond screen view and remove it from the list
             if space.y > HEIGHT:
                 enemy_l.remove(space)

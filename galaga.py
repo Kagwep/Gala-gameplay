@@ -273,6 +273,8 @@ def start_the_game():
             large_e_ship.y += 2
             #check for a collision with ship
             if large_e_ship.colliderect(player_ship):
+                val1 =0
+                val =0
                 # add an event when it happens
                 pygame.event.post(pygame.event.Event(collision))
                 #remove ship from screen

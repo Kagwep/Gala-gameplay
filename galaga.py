@@ -41,6 +41,7 @@ mouseclick= pygame.mixer.Sound('mouseclick.mp3')
 music = pygame.mixer.Sound('music.mp3')
 
 # fonts used in game
+health_font = pygame.font.SysFont('comicsans',20)
 score_font = pygame.font.SysFont('comicsans',20)
 d_end_font = pygame.font.SysFont('comicsans',50)
 end_font = pygame.font.SysFont('comicsans',50)
@@ -55,6 +56,7 @@ max_large_enemy_ships = 3
 max__enemy_bullets = 5
 #color red
 red = (255,0,0)
+green = (0,255,0)
 
 #event recorded when there is a collission, collission can be bullet and bullet or enemy ship and ship
 collision = pygame.USEREVENT + 1
@@ -148,7 +150,6 @@ def instructions():
         
 def start_the_game():
     # Do the job here !
-    
     #rectangle for ship
     player_ship = pygame.Rect((410,410,30,44))
     #Only run when true
@@ -174,6 +175,11 @@ def start_the_game():
     score = 0
     #list of large ships n screen
     large_e_ships = []
+    # health status
+    val1 = 100
+    val =90
+    # ships health
+    ship_health = 2
    
     # rate of frame movement
     clock = pygame.time.Clock()
@@ -240,6 +246,8 @@ def start_the_game():
            # music.play()
             break
         elif smallShipCollide <= 0:
+            val1 =0
+            val =0
             endGame("Your score is: " + str(score ),'Game Over ....')
            # music.play()
             break
@@ -302,6 +310,16 @@ def start_the_game():
             if small_e_ship.colliderect(player_ship):
                 #note the collision to handle event
                 pygame.event.post(pygame.event.Event(small_ship_coll))
+                #check health
+                if ship_health == 2:
+                    # cut helath by half
+                    val1 /=2
+                    val /=2
+                    ship_health -=1
+                # remove all health
+                else:
+                    val1 =0
+                    val =0
                 # remove ship from screen
                 small_enemy_ship_list.remove(small_e_ship)
             # speed of smaller enemy ship
@@ -343,6 +361,8 @@ def start_the_game():
             # in case it hits the ship
             if fired_enemy_bullet.colliderect(player_ship):
                # note the event
+                val1 =0
+                val =0
                 pygame.event.post(pygame.event.Event(ship_bullet_hit))
                 # remove bullet from list
                 enemy_bullets.remove(fired_enemy_bullet)
@@ -370,6 +390,16 @@ def start_the_game():
         #score display
         ship_score = score_font.render("Score: " + str(score ),1,(255,255,255))
         gala_win.blit(ship_score,(10,10))
+
+  
+        # Drawing Rectangle
+        
+        
+        health_d = health_font.render("Health:" ,1,(255,255,255))
+        gala_win.blit(health_d,(WIDTH-100,10))
+
+        pygame.draw.rect(gala_win, red, pygame.Rect(WIDTH-100, 40, 90, 10))
+        pygame.draw.rect(gala_win, green, pygame.Rect(WIDTH-val1, 40, val, 10))
 
         # Display small ships
         

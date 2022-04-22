@@ -32,7 +32,7 @@ speed_1 = 5
 #missile_hit_sound = pygame.mixer.Sound()
 missile_fire = pygame.mixer.Sound('missile.mp3')
 # sound when bullet/torpedo/missel is fired
-bullet_fire = pygame.mixer.Sound('torpedo.mp3')
+bullet_fire = pygame.mixer.Sound('bulletfire.mp3')
 #explosion sound
 target_hit = pygame.mixer.Sound('explosion.wav')
 # menu click sound
